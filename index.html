@@ -287,6 +287,48 @@
                 min-width: 100px;
                 padding: 8px 15px;
             }
+            #watermark-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 30px;  /* উচ্চতা দরকার মতো বাড়াও/কমাও */
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 10000;
+  background: transparent; /* চাইলে একটু স্বচ্ছ ব্যাকগ্রাউন্ড দিতে পারো */
+}
+
+#watermark {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.1);
+  font-family: 'Hind Siliguri', sans-serif;
+  font-weight: 600;
+  user-select: none;
+  animation: moveUp 5s linear infinite;
+}
+
+/* অ্যানিমেশন - নিচ থেকে উপরে চলে যাবে */
+@keyframes moveUp {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
         }
     </style>
 </head>
@@ -437,6 +479,9 @@
     
     <!-- কনফেটি এফেক্ট -->
     <div class="confetti" id="confetti"></div>
+<div id="watermark-container">
+  <div id="watermark">Hosted by Shajjad Islam</div>
+</div>
 
 <script>
     // পেজ ম্যানেজমেন্ট
