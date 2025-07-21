@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>শুভ জন্মদিন আলপনা!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Satisfy&family=Kaushan+Script&display=swap" rel="stylesheet">
+    <style>
+        /* বেসিক রিসেট */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            overflow-x: hidden;
+            height: 100vh;
+            width: 100vw;
+            touch-action: pan-y;
+            background: #f5f5f5;
+        }
+        
+        /* পেজ কন্টেইনার */
+        .page-container {
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+        
+        /* প্রতিটি পেজ */
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.8s;
+            background-size: cover;
+            background-position: center;
+            transform: translateX(100%);
+            opacity: 0;
+            z-index: 1;
+        }
+        
+        /* অ্যাক্টিভ পেজ */
+        .page.active {
+            transform: translateX(0);
+            opacity: 1;
+            z-index: 2;
+        }
+        
+        /* টেক্সট স্টাইল */
+        .message {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            margin: 15px 0;
+            color: #333;
+            line-height: 1.6;
+            max-width: 90%;
+            padding: 0 10px;
+        }
+        
+        /* GIF স্টিকার */
+        .sticker {
+            width: clamp(120px, 30vw, 180px);
+            height: clamp(120px, 30vw, 180px);
+            margin: 10px 0;
+            object-fit: contain;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
+        }
+        
+        /* নেভিগেশন বাটন */
+        .nav-btn {
+            padding: clamp(10px, 3vw, 12px) clamp(20px, 5vw, 30px);
+            background: linear-gradient(45deg, #ff6b81, #ff8e53);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 107, 129, 0.3);
+            transition: all 0.3s;
+            font-weight: bold;
+            z-index: 10;
+            margin: 5px;
+            min-width: 120px;
+        }
+        
+        .nav-btn:active {
+            transform: translateY(2px);
+        }
+        
+        /* বাটন কন্টেইনার */
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            position: absolute;
+            bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            padding: 0 20px;
+        }
+        
+        /* হেডিং স্টাইল */
+        h1 {
+            font-family: 'Kaushan Script', cursive;
+            font-size: clamp(2rem, 6vw, 2.8rem);
+            color: #ff6b81;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            padding: 0 10px;
+        }
+        
+        /* টাইপিং এফেক্ট */
+        .typing {
+            display: inline-block;
+        }
+        
+        .typing::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        /* প্রোগ্রেস বার */
+        .progress-bar {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 4px;
+            background: rgba(255, 107, 129, 0.2);
+            border-radius: 5px;
+            z-index: 100;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b81, #ff8e53);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        /* শেষ পেজের কার্ড */
+        .birthday-card {
+            background: white;
+            border-radius: 20px;
+            padding: clamp(20px, 5vw, 30px);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: scale(0.9);
+            animation: cardPop 0.8s 0.5s forwards;
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        
+        @keyframes cardPop {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .card-hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: #ff6b81;
+            animation: float 4s ease-in-out infinite;
+            opacity: 0;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+        
+        /* কনফেটি এফেক্ট */
+        .confetti {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+            overflow: hidden;
+        }
+        
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ff6b81;
+            border-radius: 50%;
+            animation: fall linear forwards;
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+ #swipeHint {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 107, 129, 0.9);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    z-index: 10000;
+    user-select: none;
+    opacity: 1;
+    transition: opacity 1s ease-out;
+    pointer-events: none;
+}
+#swipeHint.hide {
+    opacity: 0;
+    pointer-events: none;
+}
+
+        /* ল্যান্ডস্কেপ মোডের জন্য স্টাইল */
+        @media (orientation: landscape) {
+            .message {
+                font-size: clamp(1rem, 2vh, 1.3rem);
+                margin: 10px 0;
+            }
+            
+            h1 {
+                font-size: clamp(1.8rem, 4vh, 2.5rem);
+                margin-bottom: 10px;
+            }
+            
+            .sticker {
+                width: clamp(80px, 20vh, 120px);
+                height: clamp(80px, 20vh, 120px);
+            }
+            
+            .btn-container {
+                bottom: 10px;
+            }
+        }
+        
+        /* খুব ছোট ডিভাইসের জন্য */
+        @media (max-width: 350px) {
+            .message {
+                font-size: 1rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .nav-btn {
+                min-width: 100px;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- প্রোগ্রেস বার -->
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+    
+    <div class="page-container">
+        <!-- পেজ ১ -->
+        <div class="page active" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+            <img src="images/b1.gif" class="sticker" alt="বেলুন">
+            <h1>🎂🎉 শুভ জন্মদিন! 🎂🎉</h1>
+    <div class="message" id="msg1"> 
+         প্রিয়, আজ তোমার জন্মদিন!<br>
+            জানো, এই দিনে তোমার মতো একজন অসাধারণ মানুষের আগমন হয়েছিল এই পৃথিবীতে,<br>
+           যে শুধু আপনজন নয়, আশেপাশের সকলের জীবনকেও আলোয় ভরিয়ে তোলে।<br>
+          জন্মদিনে তোমার জন্য রইল অপার ভালোবাসা আর অগণিত শুভকামনা। ❤🧡
+      </div>
+            <div class="btn-container">
+                <button class="nav-btn" onclick="nextPage()">শুরু করি</button>
+            </div>
+        </div>
+        
+        <!-- পেজ ২ -->
+        <div class="page" style="background: linear-gradient(135deg, #fdcbf1 0%, #e6dee9 100%);">
+            <img src="images/b2.gif" class="sticker" alt="হৃদয়">
+            <h1> তুমি জানো কি? 🤔</h1>
+        <div class="message" id="msg2">
+            তুমি জানো কি?<br>
+            তোমার একটি মাত্র হাসিই কারো সমস্ত ক্লান্তি দূর করে দিতে পারে।<br>
+            যে মুহূর্তে তুমি হাসো, সে মুহূর্তটাই হয়ে ওঠে পৃথিবীর সবচেয়ে উজ্জ্বল সময়।<br>
+            সেই হাসিটাই হলো তোমার আসল জাদু! 😜
+        </div>
+
+            <div class="btn-container">
+                <button class="nav-btn" onclick="prevPage()">পিছনে</button>
+                <button class="nav-btn" onclick="nextPage()">পরবর্তী</button>
+            </div>
+        </div>
+        
+        <!-- পেজ ৩ -->
+        <div class="page" style="background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);">
+            <img src="images/b3.gif" class="sticker" alt="তারকা">
+            <h1>✨ তোমার আলো 👻</h1>
+    <div class="message" id="msg3">
+        তুমি আলোর মতো।<br>
+        তুমি হয়তো বুঝতেও পারো না, কিন্তু তোমার উপস্থিতি কারো অন্ধকার জীবনে নতুন ভোর এনে দেয়।<br>
+        তোমার শান্ত কণ্ঠস্বর, কোমল মন আর স্নিগ্ধ আচরণ আশেপাশের সবাইকে ভালো থাকতে শেখায়। 😃
+    </div>
+
+            <div class="btn-container">
+                <button class="nav-btn" onclick="prevPage()">পিছনে</button>
+                <button class="nav-btn" onclick="nextPage()">পরবর্তী</button>
+            </div>
+        </div>
+        
+        <!-- পেজ ৪ -->
+        <div class="page" style="background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);">
+            <img src="images/b4.gif" class="sticker" alt="প্রজাপতি">
+            <h1>🌸 ছোট্ট কথা 🤗</h1>
+    <div class="message" id="msg4">
+        কখনো কখনো জীবনের সবচেয়ে বড় পরিবর্তন আসে একটুখানি কথায়।<br>
+        আর তোমার বলা ছোট্ট কিছু শব্দ বহু মানুষের হৃদয় ছুঁয়ে যায়।<br>
+        তুমি হয়তো জানো না, কিন্তু তোমার কথা অনেকের হৃদয়ের গহীনে বাজে।
+        একদম শুরেলা বাঁশির মতো!😩
+    </div>
+
+            <div class="btn-container">
+                <button class="nav-btn" onclick="prevPage()">পিছনে</button>
+                <button class="nav-btn" onclick="nextPage()">পরবর্তী</button>
+            </div>
+        </div>
+        
+        <!-- পেজ ৫ -->
+        <div class="page" style="background: linear-gradient(135deg, #ffc3a0 0%, #ffafbd 100%);">
+            <img src="images/b5.gif" class="sticker" alt="ফুল">
+            <h1>🌼 বিশেষ মানুষ 😚</h1>
+    <div class="message" id="msg5">
+        তুমি শুধু একটি নাম নও, তুমি একটি অনুভব।<br>
+    অনেকের জীবনে তুমি একজন 'বিশেষ মানুষ', যাকে ছাড়া দিনের শেষটা অসম্পূর্ণ থেকে যায়।<br>
+        তোমার অস্তিত্বই অনেকের জীবনের সবচেয়ে মূল্যবান সম্পদ। 🥰
+    </div>
+
+            <div class="btn-container">
+                <button class="nav-btn" onclick="prevPage()">পিছনে</button>
+                <button class="nav-btn" onclick="nextPage()">পরবর্তী</button>
+            </div>
+        </div>
+        
+        <!-- পেজ ৬ -->
+        <div class="page" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);">
+            <img src="images/b6.gif" class="sticker" alt="জাদু">
+            <h1>💫 আশ্চর্য হও</h1>
+    <div class="message" id="msg6">
+        তুমি জানো না, ভবিষ্যতে তোমার জন্য কত অসাধারণ জিনিস অপেক্ষা করছে।<br>
+        জীবন তোমাকে এমন এমন চমক দেখাবে, যেগুলোর কল্পনাও তুমি এখন করতে পারো না।<br>
+        শুধু বিশ্বাস রাখো – ভালো কিছু তোমার দিকেই আসছে!
+    </div>
+
+            <div class="btn-container">
+                <button class="nav-btn" onclick="prevPage()">পিছনে</button>
+                <button class="nav-btn" onclick="nextPage()">পরবর্তী</button>
+            </div>
+        </div>
+        
+        <!-- পেজ ৭ -->
+        <div class="page" style="background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);">
+            <img src="images/b7.gif" class="sticker" alt="উড়ন্ত হৃদয়">
+            <h1>💖 ভালোবাসা</h1>
+    <div class="message" id="msg7">
+        তুমি অনেক বেশি ভালোবাসার যোগ্য।<br>
+        তুমি যেভাবে অন্যকে ভালোবাসো, সম্মান দাও — ঠিক সেভাবেই তুমি পেয়েছো অনেকের অজানা ভালোবাসা।<br>
+        তুমি হয়তো বুঝতে পারো না, কিন্তু অনেকের হৃদয়ে তুমি অমূল্য জায়গা নিয়ে আছো।
+    </div>
+
+            <div class="btn-container">
+                <button class="nav-btn" onclick="prevPage()">পিছনে</button>
+                <button class="nav-btn" onclick="nextPage()">পরবর্তী</button>
+            </div>
+        </div>
+        
+        <!-- পেজ ৮ (স্পেশাল কার্ড) -->
+        <div class="page" style="background: linear-gradient(135deg, #ff7676 0%, #f54ea2 100%);">
+            <div class="birthday-card">
+                <div class="card-hearts" id="cardHearts"></div>
+                <img src="images/b8.gif" class="sticker" alt="কেক">
+                <h1 style="font-size: clamp(2rem, 6vw, 3rem);">💝 আলপনা 💝</h1>
+    <div class="message" id="msg8" style="font-size: clamp(1rem, 3vw, 1.3rem);">
+        <p>শুভ জন্মদিন আমার সবচেয়ে প্রিয় একজন মানুষ! </p>
+        <p>তুমি আমার জীবনে আসা একজন সুন্দর মনের মানুষ ।</p>
+        <p>তোমার পথ হোক রঙিন ফুলে ভরা,</p>
+        <p>তোমার দিন হোক আনন্দে মাখানো,</p>
+        <p>আর তোমার জীবন হোক ভালোবাসায় ভরপুর।</p>
+        <p>তোমাকে হাসিতে সুন্দর মানায় ,</p>
+        <p>তোমার মুখে হাসি থাকুক চিরকাল!🧡🥰</p>
+    </div>
+
+                <button class="nav-btn" onclick="startConfetti()" style="margin-top: 15px;">সেলিব্রেট করুন!</button>
+            </div>
+            <div class="btn-container">
+                <button class="nav-btn" onclick="prevPage()">পিছনে</button>
+                <button class="nav-btn" onclick="replay()">আবার দেখুন</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- কনফেটি এফেক্ট -->
+    <div class="confetti" id="confetti"></div>
+
+<script>
+    // পেজ ম্যানেজমেন্ট
+    let currentPage = 1;
+    const totalPages = 8;
+    const pages = document.querySelectorAll('.page');
+    const progress = document.getElementById('progress');
+    
+    // প্রোগ্রেস বার আপডেট
+    function updateProgress() {
+        progress.style.width = `${((currentPage-1) / (totalPages-1)) * 100}%`;
+    }
+    
+    // পেজ শো ফাংশন
+    function showPage(pageNum) {
+        // সব পেজ হাইড
+        pages.forEach(page => {
+            page.classList.remove('active');
+        });
+        
+        // বর্তমান পেজ শো
+        pages[pageNum - 1].classList.add('active');
+        
+        // প্রোগ্রেস বার আপডেট
+        updateProgress();
+        
+        // টাইপিং এফেক্ট
+        if(pageNum !== 8) {
+            typeEffect(pageNum);
+        }
+        
+        // শেষ পেজে হার্ট এফেক্ট
+        if(pageNum === 8) {
+            createHearts();
+        }
+    }
+    
+    // টাইপিং এফেক্ট
+    function typeEffect(pageNum) {
+        const msg = document.getElementById(`msg${pageNum}`);
+        const text = msg.textContent;
+        msg.textContent = '';
+        msg.classList.add('typing');
+        
+        let i = 0;
+        function typing() {
+            if (i < text.length) {
+                msg.textContent += text.charAt(i);
+                i++;
+                setTimeout(typing, 50);
+            } else {
+                msg.classList.remove('typing');
+            }
+        }
+        
+        typing();
+    }
+    
+    // হার্ট এফেক্ট তৈরি
+    function createHearts() {
+        const container = document.getElementById('cardHearts');
+        container.innerHTML = '';
+        
+        for(let i=0; i<20; i++) {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤';
+            heart.style.left = `${Math.random() * 100}%`;
+            heart.style.top = `${Math.random() * 100}%`;
+            heart.style.animationDelay = `${Math.random() * 2}s`;
+            container.appendChild(heart);
+        }
+    }
+    
+    // কনফেটি এফেক্ট
+    function startConfetti() {
+        const confetti = document.getElementById('confetti');
+        confetti.style.display = 'block';
+        confetti.innerHTML = '';
+        
+        // কনফেটি তৈরি
+        for(let i=0; i<100; i++) {
+            const piece = document.createElement('div');
+            piece.classList.add('confetti-piece');
+            piece.style.left = `${Math.random() * 100}%`;
+            piece.style.backgroundColor = getRandomColor();
+            piece.style.animationDuration = `${Math.random() * 3 + 2}s`;
+            confetti.appendChild(piece);
+        }
+        
+        // 5 সেকেন্ড পর কনফেটি হাইড
+        setTimeout(() => {
+            confetti.style.display = 'none';
+        }, 5000);
+    }
+    
+    function getRandomColor() {
+        const colors = ['#ff6b81', '#ff8e53', '#ffcc5c', '#88d8b0', '#96ceb4', '#ffeead', '#ff6f69'];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+    
+    // পরবর্তী পেজ
+    function nextPage() {
+        if (currentPage < totalPages) {
+            currentPage++;
+            showPage(currentPage);
+        }
+    }
+    
+    // পূর্ববর্তী পেজ
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            showPage(currentPage);
+        }
+    }
+    
+    // রিপ্লে ফাংশন
+    function replay() {
+        currentPage = 1;
+        showPage(currentPage);
+    }
+    
+    // টাচ ইভেন্ট (মোবাইলের জন্য) - নিচের ১০০px এর মধ্যে swipe ডিটেকশন
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+    
+    document.addEventListener('touchstart', e => {
+        const touch = e.changedTouches[0];
+        touchStartX = touch.screenX;
+        touchStartY = touch.screenY;
+        const screenHeight = window.innerHeight;
+        if (touchStartY < screenHeight - 100) {
+            touchStartX = null; // নিচের ১০০px এর বাইরে swipe হলে ignore
+        }
+    }, {passive: true});
+    
+    document.addEventListener('touchend', e => {
+        if (touchStartX === null) return; // যদি swipe নিচে শুরু না হয়ে থাকে, তাহলে ignore
+        
+        const touch = e.changedTouches[0];
+        touchEndX = touch.screenX;
+        touchEndY = touch.screenY;
+    
+        handleSwipe();
+    }, {passive: true});
+    
+    function handleSwipe() {
+        const deltaX = touchEndX - touchStartX;
+    
+        if (deltaX > 50) { // ডান দিকে swipe হলে
+            prevPage();
+        } else if (deltaX < -50) { // বাম দিকে swipe হলে
+            nextPage();
+        }
+    }
+    
+    // প্রথম পেজ লোড হওয়ার সময় টাইপিং শুরু
+    window.onload = function() {
+        showPage(1);
+        
+        // iOS ডিভাইসের জন্য ফিক্স
+        document.addEventListener('touchmove', function(e) {
+            if (e.scale !== 1) { e.preventDefault(); }
+        }, { passive: false });
+    };
+    
+    // স্ক্রিন রিসাইজ হলে পেজ সাইজ ঠিক করা
+    window.addEventListener('resize', function() {
+        showPage(currentPage);
+    });
+</script>
+
+</body>
+</html>
