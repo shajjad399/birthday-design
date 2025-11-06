@@ -7,10 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Satisfy&family=Kaushan+Script&display=swap" rel="stylesheet">
     <style>
 
-        /* === Premium Side Watermark Style === */
+        /* === Premium Side Watermark Style (অবস্থান পরিবর্তন করা হয়েছে) === */
         #premium-watermark {
             position: fixed;
-            bottom: 20px;
+            top: 20px;    /* এটি নতুন পরিবর্তন */
             right: 20px; 
             font-size: 14px;
             color: rgba(0, 0, 0, 0.2);
@@ -256,48 +256,6 @@
             }
         }
         
-        /* ওয়াটারমার্ক (নিচ থেকে উপরে চলমান) */
-        #watermark-container {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100vw;
-            height: 30px; 
-            overflow: hidden;
-            pointer-events: none;
-            z-index: 10000;
-            background: transparent;
-        }
-
-        #watermark {
-            position: absolute;
-            width: 100%;
-            text-align: center;
-            font-size: 14px;
-            color: rgba(0, 0, 0, 0.1);
-            font-family: 'Hind Siliguri', sans-serif;
-            font-weight: 600;
-            user-select: none;
-            animation: moveUp 5s linear infinite;
-        }
-
-        @keyframes moveUp {
-            0% {
-                transform: translateY(100%);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-        }
-
         /* ল্যান্ডস্কেপ মোডের জন্য স্টাইল */
         @media (orientation: landscape) {
             .message {
@@ -452,11 +410,8 @@
     </div>
     
     <div class="confetti" id="confetti"></div>
-<div id="watermark-container">
-    <div id="watermark">Hosted by Shajjad Islam</div>
-</div>
 
-<script>
+    <script>
     // পেজ ম্যানেজমেন্ট
     let currentPage = 1;
     const totalPages = 8;
@@ -505,7 +460,7 @@
         }
     }
     
-    // টাইপিং এফেক্ট (আপডেট করা হয়েছে)
+    // টাইপিং এফেক্ট (৩ সেকেন্ডের জন্য আপডেট করা হয়েছে)
     function typeEffect(pageNum) {
         const msg = document.getElementById(`msg${pageNum}`);
         const fullText = pageMessages[pageNum - 1]; // অ্যারে থেকে টেক্সট নেওয়া
@@ -516,10 +471,6 @@
              return;
         }
 
-        // পেজ পরিবর্তন করে ফিরে এলে সাথে সাথে পুরো টেক্সট দেখানোর জন্য
-        // এখানে একটি ফ্ল্যাগ ব্যবহার করা যেতে পারে, তবে সহজ উপায়ে:
-        // যদি পেজটি টাইপ করার সময় অন্য পেজে ছিল, তবে টাইপিং শুরু করবে
-        
         msg.textContent = '';
         msg.classList.add('typing');
         
@@ -533,11 +484,11 @@
             } else {
                 msg.classList.remove('typing');
                 
-                // === এখানে অটো-নেক্সট পেজ যুক্ত করা হয়েছে ===
+                // === ৩ সেকেন্ডে অটো-নেক্সট পেজ যুক্ত করা হয়েছে ===
                 window.autoAdvanceTimeout = setTimeout(() => {
-                    nextPage(); // ৫ সেকেন্ড (৫০০০ মিলিসেকেন্ড) পর পরবর্তী পেজ
-                }, 5000); 
-                // ===========================================
+                    nextPage(); // ৩ সেকেন্ড (3000 মিলিসেকেন্ড) পর পরবর্তী পেজ কল হবে
+                }, 3000); 
+                // ========================================================
             }
         }
         
@@ -579,7 +530,7 @@
         // 5 সেকেন্ড পর কনফেটি হাইড
         setTimeout(() => {
             confetti.style.display = 'none';
-        }, 4000);
+        }, 5000);
     }
     
     function getRandomColor() {
